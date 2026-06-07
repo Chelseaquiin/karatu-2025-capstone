@@ -1,0 +1,14 @@
+app:
+  persistence:
+    provider: mysql
+    endpoint: {{ requiredEnv "MYSQL_HOST" | quote }}
+    database: {{ requiredEnv "MYSQL_DB" | quote }}
+
+    secret:
+      create: true
+      name: catalog-db
+      username: {{ requiredEnv "MYSQL_USER" | quote }}
+      password: {{ requiredEnv "MYSQL_PASSWORD" | quote }}
+
+mysql:
+  create: false

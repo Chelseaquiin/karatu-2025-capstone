@@ -1,0 +1,57 @@
+# Helmfile deployment for AWS Retail Store Sample App.
+# Run from the project root via scripts/deploy-app.ps1 after Terraform creates EKS/RDS/DynamoDB.
+# The official upstream repo is cloned into vendor/retail-store-sample-app by the deployment script.
+
+releases:
+  - name: "catalog"
+    namespace: "retail-app"
+    chart: vendor/retail-store-sample-app/src/catalog/chart
+    wait: true
+    values:
+      - ../vendor/retail-store-sample-app/src/app/templates/components.yaml.gotmpl
+      - ../vendor/retail-store-sample-app/src/app/templates/catalog.yaml.gotmpl
+      - custom-values/catalog-aws-values.yaml.gotmpl
+
+  - name: "carts"
+    namespace: "retail-app"
+    chart: vendor/retail-store-sample-app/src/cart/chart
+    wait: true
+    values:
+      - ../vendor/retail-store-sample-app/src/app/templates/components.yaml.gotmpl
+      - ../vendor/retail-store-sample-app/src/app/templates/carts.yaml.gotmpl
+      - custom-values/carts-aws-values.yaml.gotmpl
+
+  - name: "orders"
+    namespace: "retail-app"
+    chart: vendor/retail-store-sample-app/src/orders/chart
+    wait: true
+    values:
+      - ../vendor/retail-store-sample-app/src/app/templates/components.yaml.gotmpl
+      - ../vendor/retail-store-sample-app/src/app/templates/orders.yaml.gotmpl
+      - custom-values/orders-aws-values.yaml.gotmpl
+
+  - name: "checkout"
+    namespace: "retail-app"
+    chart: vendor/retail-store-sample-app/src/checkout/chart
+    wait: true
+    values:
+      - ../vendor/retail-store-sample-app/src/app/templates/components.yaml.gotmpl
+      - ../vendor/retail-store-sample-app/src/app/templates/checkout.yaml.gotmpl
+      - app:
+          persistence:
+            provider: redis
+          endpoints:
+            orders: http://orders:80
+        redis:
+          create: true
+
+  - name: "ui"
+    namespace: "retail-app"
+    chart: vendor/retail-store-sample-app/src/ui/chart
+    wait: true
+    timeout: 600
+    values:
+      - ../vendor/retail-store-sample-app/src/app/templates/components.yaml.gotmpl
+      - ../vendor/retail-store-sample-app/src/app/templates/ui.yaml.gotmpl
+      - ../vendor/retail-store-sample-app/src/app/templates/ingress.yaml.gotmpl
+      - custom-values/ui-alb-values.yaml.gotmpl

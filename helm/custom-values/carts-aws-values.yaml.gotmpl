@@ -1,0 +1,12 @@
+app:
+  persistence:
+    provider: dynamodb
+    dynamodb:
+      tableName: {{ requiredEnv "DYNAMODB_TABLE" | quote }}
+
+  env:
+    - name: AWS_REGION
+      value: {{ requiredEnv "AWS_REGION" | quote }}
+
+dynamodb:
+  create: false

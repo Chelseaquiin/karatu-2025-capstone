@@ -1,0 +1,16 @@
+[
+  {
+    "Create": {
+      "IndexName": "idx_global_customerId",
+      "KeySchema": [
+        {
+          "AttributeName": "customerId",
+          "KeyType": "HASH"
+        }
+      ],
+      "Projection": {
+        "ProjectionType": "ALL"
+      }
+    }
+  }
+]

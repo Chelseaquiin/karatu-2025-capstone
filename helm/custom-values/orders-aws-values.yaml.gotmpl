@@ -1,0 +1,14 @@
+app:
+  persistence:
+    provider: postgres
+    endpoint: {{ requiredEnv "POSTGRES_HOST" | quote }}
+    database: {{ requiredEnv "POSTGRES_DB" | quote }}
+
+    secret:
+      create: true
+      name: orders-db
+      username: {{ requiredEnv "POSTGRES_USER" | quote }}
+      password: {{ requiredEnv "POSTGRES_PASSWORD" | quote }}
+
+postgresql:
+  create: false
