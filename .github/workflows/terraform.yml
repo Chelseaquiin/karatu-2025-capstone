@@ -1,19 +1,15 @@
 name: Terraform
-
 on:
   pull_request:
     branches: [main]
   push:
     branches: [main]
-
 jobs:
   terraform:
     runs-on: ubuntu-latest
-
     defaults:
       run:
         working-directory: terraform
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -33,6 +29,18 @@ jobs:
 
       - name: Terraform Init
         run: terraform init
+
+      - name: Import existing resources
+        continue-on-error: true
+        run: |
+          terraform import aws_dynamodb_table.app_state bedrock-app-state
+          terraform import aws_db_subnet_group.main bedrock-db-subnet-group
+          terraform import aws_cloudwatch_log_group.eks_cluster /aws/eks/project-bedrock-cluster/cluster
+          terraform import aws_iam_role.eks_cluster_role bedrock-eks-cluster-role
+          terraform import aws_iam_role.eks_node_role bedrock-eks-node-role
+          terraform import aws_iam_role.lambda_role bedrock-lambda-role
+          terraform import aws_iam_user.developer bedrock-dev-view
+          terraform import aws_s3_bucket.assets bedrock-assets-alt-soe-025-3792
 
       - name: Terraform Plan
         run: terraform plan
